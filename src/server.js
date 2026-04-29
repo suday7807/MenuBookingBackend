@@ -19,7 +19,9 @@ const ALLOWED_ORIGINS = new Set([
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || origin.match(/^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/) || ALLOWED_ORIGINS.has(origin)) {
+      const isLocal = !origin || origin.match(/^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/);
+      const isVercel = origin && origin.match(/^https:\/\/menu-booking-frontend[^.]*\.vercel\.app$/);
+      if (isLocal || isVercel || ALLOWED_ORIGINS.has(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
