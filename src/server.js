@@ -12,11 +12,14 @@ const couponRoutes = require('./routes/coupons');
 
 const app = express();
 
+const ALLOWED_ORIGINS = new Set([
+  process.env.CLIENT_ORIGIN,
+].filter(Boolean));
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, curl, etc.) and any local network origin
-      if (!origin || origin.match(/^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/)) {
+      if (!origin || origin.match(/^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/) || ALLOWED_ORIGINS.has(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
